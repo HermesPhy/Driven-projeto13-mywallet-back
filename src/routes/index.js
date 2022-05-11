@@ -1,5 +1,4 @@
 import { Router } from "express";
-
 import authRouter from "./authRouter.js";
 import itensRouter from "./itensRouter.js";
 

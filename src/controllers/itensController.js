@@ -30,3 +30,37 @@ export const postItens = async (req, res) => {
         res.sendStatus(500);
     }
 }
+
+export const deleteItem = async (req, res) => {
+    try {
+        const { user } = res.locals;
+        const { itemId } = req.params;
+        const item = user.itens.find(obj => {
+            return Number(obj.id) === Number(itemId);
+        })
+        await db.collection("users").updateOne(user, {
+            $pull: { itens: item }
+    })
+    res.sendStatus(200);
+    } catch {
+        res.sendStatus(500);
+    }
+}
+
+export const uptadeItem = async (req, res) => {
+    try {
+        const { value, description } = req.body;
+        const { user } = res.locals;
+        const { itemId } = req.params;
+        await db.collection("users").updateOne(user, {
+            $set: {
+                "items.$[item].value": Number(value),
+                "items.$[item].description": description
+                }
+            },
+            { arrayFilters: [{ "item.id": Number(itemId) }] })
+        res.sendStatus(200);
+    } catch {
+        res.sendStatus(500);
+    }
+}
